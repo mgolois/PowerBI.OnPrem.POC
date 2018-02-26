@@ -14,5 +14,6 @@ namespace PowerBi.OnPrem.POC.Models
         }
         public DbSet<User> Users { get; set; }
         public DbSet<SurveyResult> SurveyResults { get; set; }
+        public DbSet<FolderAccess> FolderAccesses { get; set; }
     }
 }

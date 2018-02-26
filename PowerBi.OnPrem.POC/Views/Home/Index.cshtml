@@ -1,31 +1,129 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model Dictionary<string, List<PowerBi.OnPrem.POC.Models.CatalogItemViewModel>>
+@{
+	ViewBag.Title = "Home Page";
+	var folders = ViewBag.Folders as Dictionary<Guid, string>;
+
 }
 
 <div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+	<h1>PowerBI OnPrem - POC</h1>
 </div>
 
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+	@foreach (var folder in Model)
+	{
+		<div class="col-sm-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">@folder.Key</div>
+				<div class="panel-body">
+					@*<ul style="margin-bottom: 0;">*@
+					@foreach (var item in folder.Value)
+					{
+						<div class="col-sm-12" style="height:50px">
+							<span class="pull-left" style="padding-top: 6px;">
+								@item.Name
+							</span>
+							<span class="pull-right">
+								<a class="btn btn-default @(item.Visible ? "" : "disabled")" href="/Home/ViewReport/@item.Id"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>
+								<a class="btn btn-default @(item.CanDownload ? "" : "disabled")" href="/Home/Download/@item.Id"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download</a>
+								<a class="btn btn-default @(item.CanMove ? "" : "disabled")" data-toggle="modal" data-target="#move@(item.Id)"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Move</a>
+								<a class="btn btn-default @(item.CanClone ? "" : "disabled")" data-toggle="modal" data-target="#clone@(item.Id)"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Clone</a>
+							</span>
+						</div>
+						<!-- Modal -->
+						<div class="modal fade" id="move@(item.Id)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="myModalLabel">Move Report: @item.Name</h4>
+									</div>
+									<form class="form-horizontal" action="/Home/Move/@item.Id" method="post">
+										<div class="modal-body">
+											<div class="form-group">
+
+												<label class="col-sm-2">From:</label><div class="col-sm-10">@item.FolderName</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2">To:</label>
+												<div class="col-sm-10">
+													<select required class="form-control" name="moveToFolderId">
+														<option></option>
+														@foreach (var folderItem in folders)
+														{
+															if (folderItem.Value != item.FolderName)
+															{
+																<option value="@folderItem.Key">@folderItem.Value</option>
+															}
+
+														}
+													</select>
+												</div>
+
+											</div>
+
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											<button type="submit" class="btn btn-primary">Submit</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+						<div class="modal fade" id="clone@(item.Id)" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										<h4 class="modal-title" id="myModalLabel">Clone Report: @item.Name</h4>
+									</div>
+									<form class="form-horizontal" action="/Home/Clone/@item.Id" method="post">
+										<div class="modal-body">
+											<div class="form-group">
+
+												<label class="col-sm-2">New Report Name:</label><div class="col-sm-10">
+													<input type="text" class="form-control" name="newReportName" value="@item.Name" />
+												</div>
+											</div>
+											<div class="form-group">
+
+												<label class="col-sm-2">From:</label><div class="col-sm-10">@item.FolderName</div>
+											</div>
+											<div class="form-group">
+												<label class="col-sm-2">To:</label>
+												<div class="col-sm-10">
+													<select required class="form-control" name="cloneToFolderId">
+														<option></option>
+														@foreach (var folderItem in folders)
+														{
+															<option value="@folderItem.Key">@folderItem.Value</option>
+														}
+													</select>
+												</div>
+
+											</div>
+
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+											<button type="submit" class="btn btn-primary">Submit</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+
+					}
+
+					@*</ul>*@
+					@if (folder.Value == null || !folder.Value.Any())
+					{
+						<em>Empty Folder</em>
+					}
+				</div>
+			</div>
+		</div>
+	}
 </div>

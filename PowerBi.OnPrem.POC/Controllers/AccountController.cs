@@ -1,4 +1,5 @@
-﻿using PowerBi.OnPrem.POC.Models;
+﻿using Newtonsoft.Json;
+using PowerBi.OnPrem.POC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,7 +45,14 @@ namespace PowerBi.OnPrem.POC.Controllers
 
             FormsAuthentication.SetAuthCookie(model.Username, false);
 
-            var authTicket = new FormsAuthenticationTicket(1, model.Username, DateTime.Now, DateTime.Now.AddMinutes(30), false, user.IsAdmin ? "Admin,User" : "User");
+            var userData = new UserData
+            {
+                UserId = user.UserId,
+                Roles = user.IsAdmin ? new[] { "Admin", "User" } : new[] { "User" }
+            };
+
+            var userDataJson = JsonConvert.SerializeObject(userData);
+            var authTicket = new FormsAuthenticationTicket(1, model.Username, DateTime.Now, DateTime.Now.AddMinutes(30), false, userDataJson);
             string encryptedTicket = FormsAuthentication.Encrypt(authTicket);
             var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
             HttpContext.Response.Cookies.Add(authCookie);

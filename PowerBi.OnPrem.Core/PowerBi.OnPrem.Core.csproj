@@ -44,8 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="HttpHelper.cs" />
     <Compile Include="Models\CatalogItem.cs" />
+    <Compile Include="Models\MoveItemsRequest.cs" />
     <Compile Include="PowerBiOnPremClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,0 +1,23 @@
+﻿@{
+	ViewBag.Title = "View Report";
+}
+
+@section styles {
+	<style>
+		body {
+			margin: 0; /* Reset default margin */
+		}
+
+		iframe {
+			display: block; /* iframes are inline by default */
+			background: #000;
+			border: none; /* Reset default border */
+			height: 80vh; /* Viewport-relative units */
+			width:	100%;
+			margin-right: auto;
+			margin-left: auto;
+		}
+	</style>
+}
+	<h2 class="text-center">@ViewBag.ReportName</h2>
+<iframe frameborder="0" allowfullscreen="true" src="@ViewBag.ReportUrl" id="IFrame"></iframe>

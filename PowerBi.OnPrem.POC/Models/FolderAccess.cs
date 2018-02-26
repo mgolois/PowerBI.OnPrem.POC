@@ -13,7 +13,9 @@ namespace PowerBi.OnPrem.POC.Models
         [Key]
         public int Id { get; set; }
         public Guid FolderId { get; set; }
+        public string FolderName { get; set; }
         public int UserId { get; set; }
+        public bool CanEdit { get; set; }
         public User User { get; set; }
     }
 }

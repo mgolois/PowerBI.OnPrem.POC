@@ -6,9 +6,10 @@
 	<title>@ViewBag.Title - My ASP.NET Application</title>
 	@Styles.Render("~/Content/css")
 	@Scripts.Render("~/bundles/modernizr")
+	@RenderSection("styles", required: false)
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar navbar-inverse navbar-fixed-top" style="background-color:#a32020!important; border-color:#a32020!important;border-bottom: 6px solid #eb8c00!important">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

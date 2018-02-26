@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using PowerBi.OnPrem.POC.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
@@ -6,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web.Script.Serialization;
 using System.Web.Security;
 
 namespace PowerBi.OnPrem.POC
@@ -29,8 +32,9 @@ namespace PowerBi.OnPrem.POC
                 FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
                 if (authTicket != null && !authTicket.Expired)
                 {
-                    var roles = authTicket.UserData.Split(',');
-                    HttpContext.Current.User = new GenericPrincipal(new FormsIdentity(authTicket), roles);
+                    var userData = JsonConvert.DeserializeObject<UserData>(authTicket.UserData);
+                    
+                    HttpContext.Current.User = new CustomPrincipal(new FormsIdentity(authTicket), userData.Roles, userData.UserId);
                 }
             }
         }
