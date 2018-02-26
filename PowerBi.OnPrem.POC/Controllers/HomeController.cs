@@ -3,6 +3,7 @@ using PowerBi.OnPrem.POC.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -49,7 +50,7 @@ namespace PowerBi.OnPrem.POC.Controllers
             ViewBag.Folders = folders;
             Session.Add("Folders", folders);
             var ItemsDict = accesses.ToDictionary(a => a.FolderName,
-                                                  a => items.Where(c => c.FolderName == a.FolderName).ToList());
+                                                  a => items.Where(c => string.Equals(c.FolderName, a.FolderName, StringComparison.InvariantCultureIgnoreCase)).ToList());
             return View(ItemsDict);
         }
 
@@ -70,6 +71,12 @@ namespace PowerBi.OnPrem.POC.Controllers
             var item = await PowerBiOnPremClient.CopyReportToFolder(newReportName, $"{newReportName}.pbix", folder, id);
 
 
+            return RedirectToAction("Index");
+        }
+
+        public async Task<ActionResult> Delete(Guid id)
+        {
+            await PowerBiOnPremClient.DeleteReport(id);
             return RedirectToAction("Index");
         }
 
@@ -125,6 +132,13 @@ namespace PowerBi.OnPrem.POC.Controllers
 
 
             return View();
+        }
+
+        public async Task<ActionResult> NewReport(string reportName, string folderName, HttpPostedFileBase reportFile)
+        {
+            var bytes = new BinaryReader(reportFile.InputStream).ReadBytes(reportFile.ContentLength);
+            await PowerBiOnPremClient.AddNewReport(reportName, reportFile.FileName, folderName, bytes);
+            return RedirectToAction("Index");
         }
     }
 }

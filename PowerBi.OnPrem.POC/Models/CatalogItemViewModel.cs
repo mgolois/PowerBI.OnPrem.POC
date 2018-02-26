@@ -14,10 +14,9 @@ namespace PowerBi.OnPrem.POC.Models
         public string FolderName => Path?.Split('/')?[1];
         public bool IsPublicItem => FolderName?.Equals("Public", StringComparison.InvariantCultureIgnoreCase) ?? false;
         public bool CanDownload => true;
-        public bool CanDelete => IsPersonalItem || IsSystemAdmin;
-        public bool CanMove =>  IsPersonalItem;
-        public bool CanClone => IsSystemAdmin || IsPersonalItem;
-
+        public bool CanDelete => true;// IsPersonalItem || IsSystemAdmin;
+        public bool CanMove => true; //IsPersonalItem;
+        public bool CanClone => true; //IsSystemAdmin || IsPersonalItem;
         public string FileName => $"{Name}.pbix";
 
         public bool Visible { get; internal set; }

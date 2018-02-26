@@ -69,19 +69,31 @@ namespace PowerBi.OnPrem.Core
             }
         }
 
+        public static async Task<bool> Delete(string url)
+        {
+            var responseMessage = await client.DeleteAsync(url);
+            var responseString = await responseMessage.Content.ReadAsStringAsync();
+
+            if (!responseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception($"Calling to '{url}' failed. {responseMessage.ReasonPhrase ?? ""}", new Exception(responseString));
+            }
+            return false;
+        }
+
         private static async Task<T> GetJsonContent<T>(HttpResponseMessage responseMessage, string url)
         {
             var responseString = await responseMessage.Content.ReadAsStringAsync();
 
             if (responseMessage.IsSuccessStatusCode)
             {
-                JObject o = JObject.Parse(responseString);
-                return JsonConvert.DeserializeObject<T>(o.SelectToken("$.value").ToString());
+                return JsonConvert.DeserializeObject<T>(responseString);
             }
 
-            throw new Exception($"Posting to '{url}'  failed. {responseMessage.ReasonPhrase ?? ""}", new Exception(responseString));
+            throw new Exception($"Call '{url}'  failed. {responseMessage.ReasonPhrase ?? ""}", new Exception(responseString));
 
         }
+
         private static async Task<T> GetBytesContent<T>(HttpResponseMessage responseMessage, string url) where T : class
         {
 

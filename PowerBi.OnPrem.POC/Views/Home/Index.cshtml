@@ -8,7 +8,81 @@
 <div class="jumbotron">
 	<h1>PowerBI OnPrem - POC</h1>
 </div>
+@*<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="reportName">Report Name</label>
+						<input type="text" class="form-control" id="reportName" />
+					</div>
+					<div class="form-group">
+						<label for="folderName">Folder</label>
+						<select class="form-control" id="folderName" name="folderName">
+							@foreach (var folder in folders)
+							{
+								<option value="@folder.Key">@folder.Value</option>
+							}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="reportFile">File</label>
+						<input type="file" style="display: inline-block !important;" class="form-control" id="reportFile" name="reportFile">
+					</div>
+					<button type="submit" class="btn btn-default">Send invitation</button>
+				</form>
+			</div>
+		</div>
+	</div>*@
 
+<div class="modal fade" id="newReport" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">New Report</h4>
+			</div>
+			<form class="form-horizontal" action="/Home/NewReport" method="post" enctype="multipart/form-data">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="reportName" class="col-sm-3 control-label">Report Name</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="reportName" name="reportName">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="folderName" class="col-sm-3 control-label">Folder</label>
+						<div class="col-sm-9">
+							<select class="form-control" id="folderName" name="folderName">
+								<option></option>
+								@foreach (var folder in folders)
+								{
+									<option>@folder.Value</option>
+								}
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="reportFile">File</label>
+						<div class="col-sm-9">
+							<input type="file" class="form-control" id="reportFile" name="reportFile">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<div class="text-right" style="padding-bottom: 5px;">
+	<button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newReport">
+		Upload Report
+	</button>
+</div>
 <div class="row">
 	@foreach (var folder in Model)
 	{
@@ -20,14 +94,15 @@
 					@foreach (var item in folder.Value)
 					{
 						<div class="col-sm-12" style="height:50px">
-							<span class="pull-left" style="padding-top: 6px;">
+							<span class="pull-left">
 								@item.Name
 							</span>
 							<span class="pull-right">
-								<a class="btn btn-default @(item.Visible ? "" : "disabled")" href="/Home/ViewReport/@item.Id"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>
-								<a class="btn btn-default @(item.CanDownload ? "" : "disabled")" href="/Home/Download/@item.Id"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download</a>
-								<a class="btn btn-default @(item.CanMove ? "" : "disabled")" data-toggle="modal" data-target="#move@(item.Id)"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Move</a>
-								<a class="btn btn-default @(item.CanClone ? "" : "disabled")" data-toggle="modal" data-target="#clone@(item.Id)"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Clone</a>
+								<a class="btn btn-default btn-xs @(item.Visible ? "" : "disabled")" href="/Home/ViewReport/@item.Id"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> View</a>
+								<a class="btn btn-default btn-xs @(item.CanDownload ? "" : "disabled")" href="/Home/Download/@item.Id"><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Download</a>
+								<a class="btn btn-default btn-xs @(item.CanMove ? "" : "disabled")" data-toggle="modal" data-target="#move@(item.Id)"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> Move</a>
+								<a class="btn btn-default btn-xs @(item.CanClone ? "" : "disabled")" data-toggle="modal" data-target="#clone@(item.Id)"><span class="glyphicon glyphicon-tasks" aria-hidden="true"></span> Clone</a>
+								<a class="btn btn-default btn-xs @(item.CanDelete ? "" : "disabled")" href="/Home/Delete/@item.Id"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Delete</a>
 							</span>
 						</div>
 						<!-- Modal -->
@@ -83,17 +158,19 @@
 										<div class="modal-body">
 											<div class="form-group">
 
-												<label class="col-sm-2">New Report Name:</label><div class="col-sm-10">
+												<label class="col-sm-4">New Report Name:</label>
+												<div class="col-sm-8">
 													<input type="text" class="form-control" name="newReportName" value="@item.Name" />
 												</div>
 											</div>
 											<div class="form-group">
 
-												<label class="col-sm-2">From:</label><div class="col-sm-10">@item.FolderName</div>
+												<label class="col-sm-4">From:</label>
+												<div class="col-sm-8">@item.FolderName</div>
 											</div>
 											<div class="form-group">
-												<label class="col-sm-2">To:</label>
-												<div class="col-sm-10">
+												<label class="col-sm-4">To:</label>
+												<div class="col-sm-8">
 													<select required class="form-control" name="cloneToFolderId">
 														<option></option>
 														@foreach (var folderItem in folders)
