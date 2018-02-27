@@ -6,13 +6,6 @@ using System.Threading.Tasks;
 
 namespace PowerBi.OnPrem.Core
 {
-    public enum CatalogItemType
-    {
-        Unknown,
-        Folder,
-        Report,
-        PowerBIReport
-    }
     public class CatalogItem
     {
         public Guid Id { get; set; }

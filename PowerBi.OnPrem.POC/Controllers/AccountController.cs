@@ -35,6 +35,7 @@ namespace PowerBi.OnPrem.POC.Controllers
                 return View(model);
             }
 
+            //Dummy user retrieval POC use only
             User user = context.Users.FirstOrDefault(u => u.Username == model.Username && u.Password == model.Password);
 
             if (user == null)

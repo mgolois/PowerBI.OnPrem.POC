@@ -46,7 +46,9 @@
   <ItemGroup>
     <Compile Include="HttpHelper.cs" />
     <Compile Include="Models\CatalogItem.cs" />
+    <Compile Include="Models\CatalogItemType.cs" />
     <Compile Include="Models\MoveItemsRequest.cs" />
+    <Compile Include="Models\MoveItemsResponse.cs" />
     <Compile Include="PowerBiOnPremClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
