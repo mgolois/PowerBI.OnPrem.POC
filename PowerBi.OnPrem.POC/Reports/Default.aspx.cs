@@ -17,7 +17,7 @@ namespace PowerBi.OnPrem.POC.Reports
                 Response.Redirect("/Account/Login");
             }
             var reportPath = Request.QueryString["ReportPath"];
-            IFrame.Src = $"http://pwcsubk/Reports/powerbi{reportPath}?rs:Embed=true";
+            IFrame.Src = $"http://powerbipwc.eastus.cloudapp.azure.com/Reports/powerbi{reportPath}?rs:Embed=true";
             //ReportViewer1.ServerReport.ReportServerUrl = new Uri(ConfigurationManager.AppSettings["ReportViewer_Server_Url"]);
             //if (!string.IsNullOrEmpty(reportPath))
             //{

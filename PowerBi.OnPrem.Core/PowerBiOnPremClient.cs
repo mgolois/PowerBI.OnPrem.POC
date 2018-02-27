@@ -40,7 +40,7 @@ namespace PowerBi.OnPrem.Core
                 Content = "",
                 IsFavorite = false,
                 ModifiedDate = DateTimeOffset.Now,
-                CreatedDate = DateTimeOffset.Now
+                CreatedDate = DateTimeOffset.Now,
             };
             CatalogItem newItem = await HttpHelper.Post(url, item);
             return newItem;
@@ -53,7 +53,7 @@ namespace PowerBi.OnPrem.Core
                 throw new ArgumentNullException(nameof(folderName));
             }
 
-            string url = $"{reportApiBaseUrl}/CatalogItems";
+            string url = $"{reportApiBaseUrl}/Folders";
             CatalogItem item = new CatalogItem
             {
                 Id = Guid.NewGuid(),
@@ -66,7 +66,7 @@ namespace PowerBi.OnPrem.Core
                 Content = "",
                 IsFavorite = false,
                 ModifiedDate = DateTimeOffset.Now,
-                CreatedDate = DateTimeOffset.Now
+                CreatedDate = DateTimeOffset.Now,
             };
             CatalogItem newItem = await HttpHelper.Post(url, item);
             return newItem;

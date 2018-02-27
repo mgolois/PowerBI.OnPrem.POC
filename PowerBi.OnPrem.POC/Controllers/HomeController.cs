@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -80,14 +81,13 @@ namespace PowerBi.OnPrem.POC.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult ViewReport(Guid id)
+        public async Task<ActionResult> ViewReport(Guid id)
         {
             var report = (Session["MyReports"] as Dictionary<Guid, CatalogItemViewModel>)[id];
             ViewBag.Message = "View Report";
             ViewBag.ReportName = report.Name;
             var embeddedUrl = ConfigurationManager.AppSettings["PowerBI_Report_Embedded_Url"];
             ViewBag.ReportUrl = string.Format(embeddedUrl, report.Path);
-
             return View();
         }
 
@@ -106,11 +106,11 @@ namespace PowerBi.OnPrem.POC.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> NewFolder(User user, string folderName)
+        public async Task<ActionResult> NewFolder(User user, string userfolderName)
         {
             var publicFolderId = Guid.Parse(ConfigurationManager.AppSettings["PowerBI_Public_FolderId"]);
             var publicFolderName = ConfigurationManager.AppSettings["PowerBI_Public_FolderName"];
-            var createdFolder = await PowerBiOnPremClient.CreateFolder(folderName);
+            var createdFolder = await PowerBiOnPremClient.CreateFolder(userfolderName);
             user.FolderAccesses = new List<FolderAccess>
             {
                 new FolderAccess
@@ -122,7 +122,7 @@ namespace PowerBi.OnPrem.POC.Controllers
                 new FolderAccess
                 {
                  FolderId = createdFolder.Id,
-                 FolderName = folderName,
+                 FolderName = userfolderName,
                  CanEdit = true
                 },
 
